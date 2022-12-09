@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"runtime"
-	"shequn1/qcli/lib/migrate"
+	"simple/qcli/lib/migrate"
 	"strings"
 	"syscall"
 	"time"
@@ -41,7 +41,7 @@ func GetCreateTime(file os.FileInfo) int64 {
 func main() {
 	head, infolist := migrate.GetMigrateInfo()
 	mode := "front"
-	migrationPath := fmt.Sprintf("e:/goproject/shequn1/internal/%s/database/migrate", mode)
+	migrationPath := fmt.Sprintf("e:/goproject/simple/internal/%s/database/migrate", mode)
 	files, _ := ioutil.ReadDir(migrationPath)
 	migrateFile := gset.New(true)
 	skipedFile := gset.New(true)
@@ -88,7 +88,7 @@ func main() {
 	jobcode := fmt.Sprintf(`package entitys
 import (
 	"gorm.io/gorm"
-	"shequn1/internal/front/database/migrate"
+	"simple/internal/front/database/migrate"
 )
 //迁移任务
 type MigrateJob interface {

@@ -7,9 +7,9 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"shequn1/foundation/util"
-	migrate2 "shequn1/qcli/entitys"
-	"shequn1/qcli/lib/migrate"
+	"simple/foundation/util"
+	migrate2 "simple/qcli/entitys"
+	"simple/qcli/lib/migrate"
 	"time"
 )
 

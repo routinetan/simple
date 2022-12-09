@@ -7,29 +7,29 @@ import (
 	"simple/foundation/database/mongo"
 	"simple/foundation/database/orm"
 	"simple/foundation/pager"
-	"simple/internal/entities"
+	"simple/internal/req"
 	"sync"
 )
 
 // Category 分类控制器, 示例
 type Category struct {
-	entity entities.Category
+	entity req.Category
 }
 
 var once sync.Once
 
-var tempData = []entities.Category{}
+var tempData = []req.Category{}
 
 // NewCategory 实例化控制器
 func NewCategory() *Category {
-	orm.Master().AutoMigrate(entities.Category{})
+	orm.Master().AutoMigrate(req.Category{})
 	once.Do(func() {
 		for _, data := range tempData {
 			app.Logger().Debug(orm.Master().Create(&data).Error)
 		}
-		mongo.Collection(entities.Category{}).InsertMany(&tempData)
+		mongo.Collection(req.Category{}).InsertMany(&tempData)
 	})
-	return &Category{entity: entities.Category{}}
+	return &Category{entity: req.Category{}}
 }
 
 // Mgo 使用 mgo

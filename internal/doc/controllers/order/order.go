@@ -5,7 +5,7 @@ import (
 	"simple/foundation/app"
 	"simple/foundation/database/orm"
 	"simple/foundation/validator"
-	"simple/internal/entities"
+	"simple/internal/req"
 )
 
 // ListToVisitor get id
@@ -18,7 +18,7 @@ type ListToVisitor struct {
 // @Tags 订单列表
 // @Produce  json
 // @Param    id        query    string     true      "订单id"
-// @Success  0         {object}  entities.Order
+// @Success  0         {object}  req.Order
 // @failure  404
 // @Router  /order [get]
 func List(ctx *gin.Context) {
@@ -28,7 +28,7 @@ func List(ctx *gin.Context) {
 		return
 	}
 
-	var order entities.Order
+	var order req.Order
 	result := orm.Slave().Where("id = ?", listToVisitor.ID).Find(&order)
 	if result.RowsAffected > 0 {
 		app.NewResponse(app.Success, order).End(ctx)

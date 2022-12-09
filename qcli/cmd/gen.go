@@ -56,7 +56,6 @@ func genMigrateCmdFunc(cmd *cobra.Command, args []string) {
 }
 
 func genModelCmdFunc(cmd *cobra.Command, args []string) {
-	fmt.Println("test cmd function execute.")
 
 	if len(args) > 0 {
 		i := 0
@@ -65,20 +64,6 @@ func genModelCmdFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("  args[%d]:%s\r\n", i, args[i])
 
 		}
-	}
-}
-
-func genServiceCmdFunc(cmd *cobra.Command, args []string) {
-	fmt.Println("test cmd function execute.")
-
-	if len(args) > 0 {
-		i := 0
-		for i = 0; i < len(args); i++ {
-
-			fmt.Printf("  args[%d]:%s\r\n", i, args[i])
-
-		}
-
 	}
 }
 
@@ -105,7 +90,7 @@ func genController(cmd *cobra.Command, args []string) {
 	if err != nil {
 		panic(err)
 	}
-	tpl, err := template.ParseFiles("tpl/controller/controller.tpl")
+	tpl, err := template.ParseFiles("tpl/controller/base.tpl")
 	if err != nil {
 		panic(err)
 	}
@@ -115,22 +100,23 @@ func genController(cmd *cobra.Command, args []string) {
 	tpl.Execute(fp, data)
 }
 
-func genService(cmd *cobra.Command, args []string) {
+func genBiz(cmd *cobra.Command, args []string) {
 	ctrName := args[0]
 	Cval := ctrName
 	ctrName = Conv2CamlStyle(ctrName)
-	module, _ := cmd.Flags().GetString("m")
-	migrateFile := fmt.Sprintf("../internal/%s/service/%s.go", module, Cval)
+	model := strings.ToLower(ctrName[:1]) + ctrName[1:]
+	migrateFile := fmt.Sprintf("../internal/service/%s.go", Cval)
 	fp, err := os.OpenFile(migrateFile, os.O_RDWR|os.O_CREATE, 0777)
 	if err != nil {
 		panic(err)
 	}
-	tpl, err := template.ParseFiles("tpl/service/controller.tpl")
+	tpl, err := template.ParseFiles("tpl/service/base.tpl")
 	if err != nil {
 		panic(err)
 	}
 	data := make(map[string]interface{})
 	data["CVal"] = Cval
+	data["Model"] = model
 	data["CStruct"] = ctrName
 	tpl.Execute(fp, data)
 }
@@ -145,7 +131,7 @@ func genModel(cmd *cobra.Command, args []string) {
 	if err != nil {
 		panic(err)
 	}
-	tpl, err := template.ParseFiles("tpl/model/controller.tpl")
+	tpl, err := template.ParseFiles("tpl/model/curd.tpl")
 	if err != nil {
 		panic(err)
 	}
@@ -161,6 +147,14 @@ func genControllerCmdFunc(cmd *cobra.Command, args []string) {
 		return
 	}
 	genController(cmd, args)
+}
+
+func genBizCmdFunc(cmd *cobra.Command, args []string) {
+	if len(args) < 1 {
+		fmt.Println("controller gen latest have one params")
+		return
+	}
+	genBiz(cmd, args)
 }
 
 func genDAOCmdFunc(cmd *cobra.Command, args []string) {
@@ -187,7 +181,7 @@ func genCrudCmdFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 	genController(cmd, args)
-	genService(cmd, args)
+	genBiz(cmd, args)
 	genModel(cmd, args)
 }
 
@@ -215,7 +209,7 @@ COMMAND
     app        生成一个新的模块
     curd       install or update qcli to system in default...
     controller automatically generate go files for ORM models...
-    service    extra features for go modules...
+    biz        extra biz features for go modules...
     dao        running go codes with hot-compiled-like feature...
     model      create and initialize an empty qcli project...
     view       show more information about a specified command
@@ -249,6 +243,17 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: genControllerCmdFunc,
+}
+
+var genBizCmd = &cobra.Command{
+	Use:   "biz",
+	Short: "gen Biz",
+	Long: `A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: genBizCmdFunc,
 }
 
 var curdCmd = &cobra.Command{
@@ -297,6 +302,8 @@ func init() {
 	genCmd.AddCommand(modelCmd)
 	genMigrateCmd.Flags().String("m", "admin", "change a module")
 	genCmd.AddCommand(genMigrateCmd)
+	genBizCmd.Flags().String("m", "admin", "change a module")
+	genCmd.AddCommand(genBizCmd)
 	genCtrlCmd.Flags().String("m", "admin", "change a module")
 	genCmd.AddCommand(genCtrlCmd)
 }

@@ -1,6 +1,6 @@
 package main
 
-import "shequn1/qcli/cmd"
+import "simple/qcli/cmd"
 
 func main() {
 	cmd.Execute()

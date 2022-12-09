@@ -12,6 +12,7 @@ import (
 	"simple/foundation/rbac"
 	"simple/foundation/server"
 	"simple/foundation/util"
+	"simple/internal/admin/controller"
 )
 
 func GetRouter(engine *gin.Engine) {
@@ -32,7 +33,15 @@ func GetRouter(engine *gin.Engine) {
 	engine.StaticFS("/js", http.Dir("./web/admin/dist/js/"))
 	engine.StaticFS("/public", http.Dir("./public"))
 	// 注册公用的中间件
+
+	//业务逻辑代码-开始
 	engine.Use(middlewares.CORS)
+	engine.GET("/simples", controller.Simple{}.List)
+	engine.GET("/simple/:id", controller.Simple{}.Info)
+	engine.POST("/simple/:id", controller.Simple{}.Create)
+	engine.POST("/simple/:id", controller.Simple{}.Edit)
+	engine.DELETE("/simple/:id", controller.Simple{}.Delete)
+	//业务逻辑代码-结束
 
 	// 登录路由需要在jwt验证中间件之前
 

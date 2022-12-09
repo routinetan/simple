@@ -56,7 +56,7 @@ func ParseReq(ctx *gin.Context) g.Map {
 	return requestMap
 }
 
-func ValidatorRules(ctx *gin.Context, bizRule map[string]string, obj any) error {
+func ValidatorRules(ctx *gin.Context, bizRule map[string]interface{}, obj any) error {
 	ctxCh := gi18n.WithLanguage(context.TODO(), "zh-CN")
 	jsonData := ParseReq(ctx)
 	verr := g.Validator().Ctx(ctxCh).Rules(bizRule).CheckMap(jsonData)

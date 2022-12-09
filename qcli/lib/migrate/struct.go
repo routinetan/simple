@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
-	"shequn1/foundation/util"
+	"simple/foundation/util"
 )
 
 type MigrateJob struct {
