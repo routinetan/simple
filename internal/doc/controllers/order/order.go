@@ -2,9 +2,9 @@ package order
 
 import (
 	"github.com/gin-gonic/gin"
-	"simple/foundation/app"
-	"simple/foundation/database/orm"
-	"simple/foundation/validator"
+	app2 "simple/internal/foundation/app"
+	"simple/internal/foundation/database/orm"
+	"simple/internal/foundation/validator"
 	"simple/internal/req"
 )
 
@@ -24,16 +24,16 @@ type ListToVisitor struct {
 func List(ctx *gin.Context) {
 	var listToVisitor ListToVisitor
 	if validate := validator.Bind(ctx, &listToVisitor); !validate.IsValid() {
-		app.NewResponse(app.Fail, validate.ErrorsInfo).End(ctx)
+		app2.NewResponse(app2.Fail, validate.ErrorsInfo).End(ctx)
 		return
 	}
 
 	var order req.Order
 	result := orm.Slave().Where("id = ?", listToVisitor.ID).Find(&order)
 	if result.RowsAffected > 0 {
-		app.NewResponse(app.Success, order).End(ctx)
+		app2.NewResponse(app2.Success, order).End(ctx)
 		return
 	}
-	app.NewResponse(app.NotFound, nil).End(ctx)
+	app2.NewResponse(app2.NotFound, nil).End(ctx)
 	return
 }

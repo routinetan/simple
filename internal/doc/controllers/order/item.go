@@ -2,11 +2,11 @@ package order
 
 import (
 	"github.com/gin-gonic/gin"
-	"simple/foundation/app"
-	"simple/foundation/database/category"
-	"simple/foundation/database/mongo"
-	"simple/foundation/database/orm"
-	"simple/foundation/pager"
+	app2 "simple/internal/foundation/app"
+	"simple/internal/foundation/database/category"
+	"simple/internal/foundation/database/mongo"
+	"simple/internal/foundation/database/orm"
+	pager2 "simple/internal/foundation/pager"
 	"simple/internal/req"
 	"sync"
 )
@@ -25,7 +25,7 @@ func NewCategory() *Category {
 	orm.Master().AutoMigrate(req.Category{})
 	once.Do(func() {
 		for _, data := range tempData {
-			app.Logger().Debug(orm.Master().Create(&data).Error)
+			app2.Logger().Debug(orm.Master().Create(&data).Error)
 		}
 		mongo.Collection(req.Category{}).InsertMany(&tempData)
 	})
@@ -34,30 +34,30 @@ func NewCategory() *Category {
 
 // Mgo 使用 mgo
 func (c *Category) Mgo(ctx *gin.Context) {
-	app.NewResponse(app.Success, category.New().Table(c.entity).WithMgo().Categories()).End(ctx)
+	app2.NewResponse(app2.Success, category.New().Table(c.entity).WithMgo().Categories()).End(ctx)
 }
 
 // Mongo 使用 mongo
 func (c *Category) Mongo(ctx *gin.Context) {
-	app.NewResponse(app.Success, category.New().Table(c.entity).WithMongo().Categories()).End(ctx)
+	app2.NewResponse(app2.Success, category.New().Table(c.entity).WithMongo().Categories()).End(ctx)
 }
 
 // Mysql 使用 gorm
 func (c *Category) Mysql(ctx *gin.Context) {
-	app.NewResponse(app.Success, category.New().Table(c.entity).WithMysql().Categories()).End(ctx)
+	app2.NewResponse(app2.Success, category.New().Table(c.entity).WithMysql().Categories()).End(ctx)
 }
 
 // ListMongo 分页功能
 func (c *Category) ListMongo(ctx *gin.Context) {
-	app.NewResponse(app.Success, pager.New(ctx, pager.NewMongoDriver()).SetIndex(c.entity.TableName()).Find(c.entity).Result()).End(ctx)
+	app2.NewResponse(app2.Success, pager2.New(ctx, pager2.NewMongoDriver()).SetIndex(c.entity.TableName()).Find(c.entity).Result()).End(ctx)
 }
 
 // ListMgo 分页功能
 func (c *Category) ListMgo(ctx *gin.Context) {
-	app.NewResponse(app.Success, pager.New(ctx, pager.NewMgoDriver()).SetIndex(c.entity.TableName()).Find(c.entity).Result()).End(ctx)
+	app2.NewResponse(app2.Success, pager2.New(ctx, pager2.NewMgoDriver()).SetIndex(c.entity.TableName()).Find(c.entity).Result()).End(ctx)
 }
 
 // ListMysql 分页功能
 func (c *Category) ListMysql(ctx *gin.Context) {
-	app.NewResponse(app.Success, pager.New(ctx, pager.NewGormDriver()).Where(pager.Where{"level": 2}).SetIndex(c.entity.TableName()).Find(c.entity).Result()).End(ctx)
+	app2.NewResponse(app2.Success, pager2.New(ctx, pager2.NewGormDriver()).Where(pager2.Where{"level": 2}).SetIndex(c.entity.TableName()).Find(c.entity).Result()).End(ctx)
 }

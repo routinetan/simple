@@ -7,7 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"simple/foundation/util"
+	"simple/internal/foundation/util"
 	migrate2 "simple/qcli/entitys"
 	"simple/qcli/lib/migrate"
 	"time"

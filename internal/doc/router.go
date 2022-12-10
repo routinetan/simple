@@ -2,8 +2,8 @@ package doc
 
 import (
 	"github.com/gin-gonic/gin"
-	"simple/foundation/middlewares"
 	"simple/internal/doc/controllers/order"
+	"simple/internal/foundation/middlewares"
 )
 
 // GetEngine 路由注册主方法

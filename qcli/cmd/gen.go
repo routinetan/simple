@@ -38,7 +38,7 @@ func genMigrateCmdFunc(cmd *cobra.Command, args []string) {
 		migrateName = strings.Join(words, "")
 	}
 	module, _ := cmd.Flags().GetString("m")
-	migrateFile := fmt.Sprintf("../internal/%s/database/migrate/%s.go", module, table)
+	migrateFile := fmt.Sprintf("../migrate/%s/%s.go", module, table)
 	fp, err := os.OpenFile(migrateFile, os.O_RDWR|os.O_CREATE, 0777)
 	if err != nil {
 		panic(err)
@@ -85,7 +85,7 @@ func genController(cmd *cobra.Command, args []string) {
 	Cval := ctrName
 	ctrName = Conv2CamlStyle(ctrName)
 	module, _ := cmd.Flags().GetString("m")
-	migrateFile := fmt.Sprintf("../internal/%s/controller/%s.go", module, Cval)
+	migrateFile := fmt.Sprintf("../internal/%s/%s.go", module, Cval)
 	fp, err := os.OpenFile(migrateFile, os.O_RDWR|os.O_CREATE, 0777)
 	if err != nil {
 		panic(err)
@@ -105,12 +105,12 @@ func genBiz(cmd *cobra.Command, args []string) {
 	Cval := ctrName
 	ctrName = Conv2CamlStyle(ctrName)
 	model := strings.ToLower(ctrName[:1]) + ctrName[1:]
-	migrateFile := fmt.Sprintf("../internal/service/%s.go", Cval)
+	migrateFile := fmt.Sprintf("../internal/biz/%s.go", Cval)
 	fp, err := os.OpenFile(migrateFile, os.O_RDWR|os.O_CREATE, 0777)
 	if err != nil {
 		panic(err)
 	}
-	tpl, err := template.ParseFiles("tpl/service/base.tpl")
+	tpl, err := template.ParseFiles("tpl/biz/base.tpl")
 	if err != nil {
 		panic(err)
 	}
@@ -126,12 +126,12 @@ func genModel(cmd *cobra.Command, args []string) {
 	Cval := ctrName
 	ctrName = Conv2CamlStyle(ctrName)
 	module, _ := cmd.Flags().GetString("m")
-	migrateFile := fmt.Sprintf("../internal/%s/model/%s.go", module, Cval)
+	migrateFile := fmt.Sprintf("../internal/%s/store/%s.go", module, Cval)
 	fp, err := os.OpenFile(migrateFile, os.O_RDWR|os.O_CREATE, 0777)
 	if err != nil {
 		panic(err)
 	}
-	tpl, err := template.ParseFiles("tpl/model/curd.tpl")
+	tpl, err := template.ParseFiles("tpl/store/curd.tpl")
 	if err != nil {
 		panic(err)
 	}
@@ -206,12 +206,12 @@ var genCmd = &cobra.Command{
 USAGE
     qcli gen COMMAND [ARGUMENT] [OPTION]
 COMMAND
-    app        生成一个新的模块
+    cmd        生成一个新的模块
     curd       install or update qcli to system in default...
     controller automatically generate go files for ORM models...
     biz        extra biz features for go modules...
     dao        running go codes with hot-compiled-like feature...
-    model      create and initialize an empty qcli project...
+    store      create and initialize an empty qcli project...
     view       show more information about a specified command
     migrate    create migration file 
     api        packing any file/directory to a resource file, or a go file...
@@ -228,8 +228,8 @@ ADDITIONAL
 }
 
 var modelCmd = &cobra.Command{
-	Use:   "model",
-	Short: "gen model",
+	Use:   "store",
+	Short: "gen store",
 	Long:  `这条命令可以用来生成model`,
 	Run:   testCmdFunc,
 }
@@ -304,6 +304,6 @@ func init() {
 	genCmd.AddCommand(genMigrateCmd)
 	genBizCmd.Flags().String("m", "admin", "change a module")
 	genCmd.AddCommand(genBizCmd)
-	genCtrlCmd.Flags().String("m", "admin", "change a module")
+	genCtrlCmd.Flags().String("m", "api", "change a module")
 	genCmd.AddCommand(genCtrlCmd)
 }
